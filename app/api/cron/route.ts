@@ -70,8 +70,9 @@ export async function GET(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, count: summarizedNews.length });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Cron job error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }
