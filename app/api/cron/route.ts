@@ -13,9 +13,10 @@ const RSS_FEEDS = [
 export async function GET(req: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
   const authHeader = req.headers.get('authorization');
-  const secretParam = req.nextUrl.searchParams.get('secret');
+  // 브라우저 주소창 직접 호출 시 ?secret=CRON_SECRET 값으로 인증
+  const secretParam = req.nextUrl.searchParams.get('secret')?.trim();
 
-  const headerOk = authHeader === `Bearer ${cronSecret}`;
+  const headerOk = Boolean(cronSecret && authHeader === `Bearer ${cronSecret}`);
   const queryOk = Boolean(cronSecret && secretParam && secretParam === cronSecret);
 
   if (!headerOk && !queryOk) {
